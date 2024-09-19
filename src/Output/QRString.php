@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class QRString
  *
@@ -10,97 +11,77 @@
  * @license      MIT
  */
 
+declare(strict_types=1);
+
 namespace qrcodegenerator\QRCode\Output;
 
 use qrcodegenerator\QRCode\QRCode;
 
-/**
- *
- */
-class QRString extends QROutputAbstract{
+class QRString extends QROutputAbstract
+{
+    /**
+     * @throws QRCodeOutputException
+     */
+    public function __construct(protected QRStringOptions $options = new QRStringOptions())
+    {
+        if (
+            !\in_array(
+                $this->options->type,
+                [QRCode::OUTPUT_STRING_TEXT, QRCode::OUTPUT_STRING_JSON, QRCode::OUTPUT_STRING_HTML],
+                true
+            )
+        ) {
+            throw new QRCodeOutputException('Invalid string output type!');
+        }
+    }
 
-	/**
-	 * @var \chillerlan\QRCode\Output\QRStringOptions
-	 */
-	protected $options;
+    public function dump(): string
+    {
+        return match ($this->options->type) {
+            QRCode::OUTPUT_STRING_JSON => \json_encode($this->matrix) ?: '',
+            QRCode::OUTPUT_STRING_TEXT => $this->toString(),
+            default                    => $this->toHTML(),
+        };
+    }
 
-	/**
-	 * @var \chillerlan\QRCode\Output\QRStringOptions $outputOptions
-	 * @throws \chillerlan\QRCode\Output\QRCodeOutputException
-	 */
-	public function __construct(QRStringOptions $outputOptions = null){
-		$this->options = $outputOptions;
+    protected function toString(): string
+    {
+        $str = '';
+        foreach ($this->matrix as $row) {
+            foreach ($row as $col) {
+                $str .= $col
+                    ? $this->options->textDark
+                    : $this->options->textLight;
+            }
 
-		if(!$this->options instanceof QRStringOptions){
-			$this->options = new QRStringOptions;
-		}
+            $str .= $this->options->eol;
+        }
 
-		if(!in_array($this->options->type, [QRCode::OUTPUT_STRING_TEXT, QRCode::OUTPUT_STRING_JSON, QRCode::OUTPUT_STRING_HTML], true)){
-			throw new QRCodeOutputException('Invalid string output type!');
-		}
+        return $str;
+    }
 
-	}
+    protected function toHTML(): string
+    {
+        $html = '';
+        foreach ($this->matrix as $row) {
+            // in order to not bloat the output too much, we use the shortest possible valid HTML tags
+            $html .= '<' . $this->options->htmlRowTag . '>';
 
-	/**
-	 * @return string
-	 */
-	public function dump(){
+            foreach ($row as $col) {
+                $tag = $col
+                    ? 'b'  // dark
+                    : 'i'; // light
 
-		switch($this->options->type){
-			case QRCode::OUTPUT_STRING_JSON: return json_encode($this->matrix);
-			case QRCode::OUTPUT_STRING_TEXT: return $this->toString();
-			case QRCode::OUTPUT_STRING_HTML:
-			default:
-				return $this->toHTML();
-		}
+                $html .= '<' . $tag . '></' . $tag . '>';
+            }
 
-	}
+            if (!$this->options->htmlOmitEndTag) {
+                $html .= '</' . $this->options->htmlRowTag . '>';
+            }
 
-	/**
-	 * @return string
-	 */
-	protected function toString(){
-		$str = '';
+            $html .= $this->options->eol;
+        }
 
-		foreach($this->matrix as $row){
-			foreach($row as $col){
-				$str .= $col
-					? $this->options->textDark
-					: $this->options->textLight;
-			}
-
-			$str .= $this->options->eol;
-		}
-
-		return $str;
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function toHTML(){
-		$html = '';
-
-		foreach($this->matrix as $row){
-			// in order to not bloat the output too much, we use the shortest possible valid HTML tags
-			$html .= '<'.$this->options->htmlRowTag.'>';
-
-			foreach($row as $col){
-				$tag = $col
-					? 'b'  // dark
-					: 'i'; // light
-
-				$html .= '<'.$tag.'></'.$tag.'>';
-			}
-
-			if(!(bool)$this->options->htmlOmitEndTag){
-				$html .= '</'.$this->options->htmlRowTag.'>';
-			}
-
-			$html .= $this->options->eol;
-		}
-
-		return $html;
-	}
-
+        return $html;
+    }
 }

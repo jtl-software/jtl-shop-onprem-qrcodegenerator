@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class Kanji
  *
@@ -10,55 +11,46 @@
  * @license      MIT
  */
 
+declare(strict_types=1);
+
 namespace qrcodegenerator\QRCode\Data;
 
 use qrcodegenerator\QRCode\BitBuffer;
 use qrcodegenerator\QRCode\QRConst;
 
-/**
- *
- */
-class Kanji extends QRDataAbstract{
+class Kanji extends QRDataAbstract
+{
+    public int $mode = QRConst::MODE_KANJI;
 
-	/**
-	 * @var int
-	 */
-	public $mode = QRConst::MODE_KANJI;
+    /**
+     * @var int[]
+     */
+    protected array $lengthBits = [8, 10, 12];
 
-	/**
-	 * @var array
-	 */
-	protected $lengthBits = [8, 10, 12];
+    /**
+     * @param BitBuffer $buffer
+     * @throws QRCodeDataException
+     */
+    public function write(BitBuffer $buffer): void
+    {
+        $i = 0;
+        while ($i + 1 < $this->dataLength) {
+            $c = ((0xff & \ord($this->data[$i])) << 8) | (0xff & \ord($this->data[$i + 1]));
 
-	/**
-	 * @param \chillerlan\QRCode\BitBuffer $buffer
-	 *
-	 * @throws \chillerlan\QRCode\Data\QRCodeDataException
-	 */
-	public function write(BitBuffer &$buffer){
+            if (0x8140 <= $c && $c <= 0x9FFC) {
+                $c -= 0x8140;
+            } elseif (0xE040 <= $c && $c <= 0xEBBF) {
+                $c -= 0xC140;
+            } else {
+                throw new QRCodeDataException('illegal char at ' . ($i + 1) . ' (' . $c . ')');
+            }
 
-		$i = 0;
-		while($i + 1 < $this->dataLength){
-			$c = ((0xff&ord($this->data[$i])) << 8)|(0xff&ord($this->data[$i + 1]));
+            $buffer->put((($c >> 8) & 0xff) * 0xC0 + ($c & 0xff), 13);
+            $i += 2;
+        }
 
-			if(0x8140 <= $c && $c <= 0x9FFC){
-				$c -= 0x8140;
-			}
-			else if(0xE040 <= $c && $c <= 0xEBBF){
-				$c -= 0xC140;
-			}
-			else{
-				throw new QRCodeDataException('illegal char at '.($i + 1).' ('.$c.')');
-			}
-
-			$buffer->put((($c >> 8)&0xff) * 0xC0 + ($c&0xff), 13);
-			$i += 2;
-		}
-
-		if($i < $this->dataLength){
-			throw new QRCodeDataException('illegal char at '.($i + 1));
-		}
-
-	}
-
+        if ($i < $this->dataLength) {
+            throw new QRCodeDataException('illegal char at ' . ($i + 1));
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @filesource   example.php
  * @created      10.12.2015
@@ -6,6 +7,8 @@
  * @copyright    2015 Smiley
  * @license      MIT
  */
+
+declare(strict_types=1);
 
 //require_once '../vendor/autoload.php';
 //require_once '../../autoload.php';
@@ -94,8 +97,8 @@ $data = 'otpauth://totp/test?secret=B3JX4VCVJDVNXNZ5&issuer=chillerlan.net';
 <body>
 <?php
 
-echo '<img class="qrcode" alt="qrcode" src="'.(new QRCode($data, new QRImage))->output().'" />';
-echo '<div class="qrcode">'.(new QRCode($data, new QRString))->output().'</div>';
+echo '<img class="qrcode" alt="qrcode" src="'.(new QRCode($data, new QRImage()))->output().'" />';
+echo '<div class="qrcode">'.(new QRCode($data, new QRString()))->output().'</div>';
 
 echo('<pre>'
 	."\n\n"

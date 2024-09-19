@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class Byte
  *
@@ -10,35 +11,31 @@
  * @license      MIT
  */
 
+declare(strict_types=1);
+
 namespace qrcodegenerator\QRCode\Data;
 
 use qrcodegenerator\QRCode\BitBuffer;
 use qrcodegenerator\QRCode\QRConst;
 
-/**
- *
- */
-class Byte extends QRDataAbstract{
+class Byte extends QRDataAbstract
+{
+    public int $mode = QRConst::MODE_BYTE;
 
-	/**
-	 * @var int
-	 */
-	public $mode = QRConst::MODE_BYTE;
+    /**
+     * @var int[]
+     */
+    protected array $lengthBits = [8, 16, 16];
 
-	/**
-	 * @var array
-	 */
-	protected $lengthBits = [8, 16, 16];
-
-	/**
-	 * @param \chillerlan\QRCode\BitBuffer $buffer
-	 */
-	public function write(BitBuffer &$buffer){
-		$i = 0;
-		while($i < $this->dataLength){
-			$buffer->put(ord($this->data[$i]), 8);
-			$i++;
-		}
-	}
-
+    /**
+     * @param BitBuffer $buffer
+     */
+    public function write(BitBuffer $buffer): void
+    {
+        $i = 0;
+        while ($i < $this->dataLength) {
+            $buffer->put(\ord($this->data[$i]), 8);
+            $i++;
+        }
+    }
 }

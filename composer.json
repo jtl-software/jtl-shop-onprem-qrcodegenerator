@@ -2,9 +2,9 @@
     "name": "jtlshop/qrcodegenerator",
     "description": "QRCode-Generator adopted from chillerlan/php-qrcode",
     "type": "package",
-    "version": "0.1.0",
+    "version": "3.0.0",
     "require": {
-        "php": ">=5.4.45"
+        "php": ">=8.2"
     },
     "license": "MIT",
     "authors": [

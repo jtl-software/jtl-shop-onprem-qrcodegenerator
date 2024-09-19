@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class QRStringOptions
  *
@@ -10,24 +11,23 @@
  * @license      MIT
  */
 
+declare(strict_types=1);
+
 namespace qrcodegenerator\QRCode\Output;
+
 use qrcodegenerator\QRCode\QRCode;
 
-/**
- *
- */
-class QRStringOptions{
+class QRStringOptions
+{
+    public int $type = QRCode::OUTPUT_STRING_HTML;
 
-	public $type = QRCode::OUTPUT_STRING_HTML;
+    public string $textDark = '#';
 
-	public $textDark = '#';
+    public string $textLight = ' ';
 
-	public $textLight = ' ';
+    public string $eol = \PHP_EOL;
 
-	public $eol = PHP_EOL;
+    public string $htmlRowTag = 'p';
 
-	public $htmlRowTag = 'p';
-
-	public $htmlOmitEndTag = true;
-
+    public bool $htmlOmitEndTag = true;
 }
