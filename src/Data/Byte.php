@@ -27,9 +27,6 @@ class Byte extends QRDataAbstract
      */
     protected array $lengthBits = [8, 16, 16];
 
-    /**
-     * @param BitBuffer $buffer
-     */
     public function write(BitBuffer $buffer): void
     {
         $i = 0;

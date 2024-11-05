@@ -34,7 +34,6 @@ class Polynomial
 
     /**
      * @param int[] $num
-     * @param int   $shift
      */
     public function __construct(array $num = [1], int $shift = 0)
     {
@@ -43,8 +42,6 @@ class Polynomial
 
     /**
      * @param int[] $num
-     * @param int   $shift
-     * @return self
      */
     public function setNum(array $num, int $shift = 0): self
     {

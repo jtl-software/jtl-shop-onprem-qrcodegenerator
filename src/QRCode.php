@@ -28,9 +28,6 @@ use qrcodegenerator\QRCode\Output\QROutputInterface;
  */
 class QRCode
 {
-    /**
-     * API constants
-     */
     public const OUTPUT_STRING_TEXT = 0;
     public const OUTPUT_STRING_JSON = 1;
     public const OUTPUT_STRING_HTML = 2;
@@ -416,13 +413,12 @@ class QRCode
         $maxDcCount     = 0;
         $totalCodeCount = 0;
         $rsBlocks       = Util::getRSBlocks($this->typeNumber, $this->errorCorrectLevel);
-        $rsBlockCount   = count($rsBlocks);
+        $rsBlockCount   = \count($rsBlocks);
         $ecdata         = \array_fill(0, $rsBlockCount, null);
         $dcdata         = $ecdata;
 
         foreach ($rsBlocks as $key => $value) {
-            $rsBlockTotal     = $value[0];
-            $rsBlockDataCount = $value[1];
+            [$rsBlockTotal, $rsBlockDataCount] = $value;
 
             $maxDcCount = \max($maxDcCount, $rsBlockDataCount);
             $maxEcCount = \max($maxEcCount, $rsBlockTotal - $rsBlockDataCount);
@@ -562,8 +558,7 @@ class QRCode
         $range = \range(-1, 7);
 
         foreach ([[0, 0], [$this->pixelCount - 7, 0], [0, $this->pixelCount - 7]] as $grid) {
-            $row = $grid[0];
-            $col = $grid[1];
+            [$row, $col] = $grid;
 
             $r = -1;
             while ($r < 8) {
@@ -591,8 +586,8 @@ class QRCode
     {
         $range = QRConst::$PATTERN_POSITION[$this->typeNumber - 1];
 
-        foreach ($range as $i => $posI) {
-            foreach ($range as $j => $posJ) {
+        foreach ($range as $posI) {
+            foreach ($range as $posJ) {
                 if ($this->matrix[$posI][$posJ] !== null) {
                     continue;
                 }

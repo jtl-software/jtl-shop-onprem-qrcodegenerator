@@ -30,12 +30,10 @@ class Number extends QRDataAbstract
     public function write(BitBuffer $buffer): void
     {
         $i = 0;
-
         while ($i + 2 < $this->dataLength) {
             $buffer->put(self::parseInt(\substr($this->data, $i, 3)), 10);
             $i += 3;
         }
-
         if ($i < $this->dataLength) {
             if ($this->dataLength - $i === 1) {
                 $buffer->put(self::parseInt(\substr($this->data, $i, $i + 1)), 4);
@@ -55,13 +53,11 @@ class Number extends QRDataAbstract
         for ($i = 0; $i < $len; $i++) {
             $c    = \ord($string[$i]);
             $ord0 = \ord('0');
-
             if ($ord0 <= $c && $c <= \ord('9')) {
                 $c -= $ord0;
             } else {
                 throw new QRCodeDataException('illegal char: ' . $c);
             }
-
             $num = $num * 10 + $c;
         }
 

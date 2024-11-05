@@ -23,11 +23,9 @@ class Util
         $i   = 0;
         while ($i < $len) {
             $c = \ord($s[$i]);
-
             if (!(\ord('0') <= $c && $c <= \ord('9'))) {
                 return false;
             }
-
             $i++;
         }
 
@@ -38,10 +36,8 @@ class Util
     {
         $len = \strlen($s);
         $i   = 0;
-
         while ($i < $len) {
             $c = \ord($s[$i]);
-
             if (
                 !\str_contains(' $%*+-./:', $s[$i])
                 && !(\ord('0') <= $c && $c <= \ord('9'))
@@ -114,13 +110,11 @@ class Util
         if (!\array_key_exists($errorCorrectLevel, QRConst::$RSBLOCK)) {
             throw new QRCodeException('$typeNumber: ' . $typeNumber . ' / $errorCorrectLevel: ' . $errorCorrectLevel);
         }
-
         $rsBlock = QRConst::$BLOCK_TABLE[($typeNumber - 1) * 4 + QRConst::$RSBLOCK[$errorCorrectLevel]];
         $list    = [];
         $length  = count($rsBlock) / 3;
         $j       = 0;
         $i       = 0;
-
         while ($i < $length) {
             while ($j < $rsBlock[$i * 3]) {
                 $list[] = [$rsBlock[$i * 3 + 1], $rsBlock[$i * 3 + 2]];

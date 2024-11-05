@@ -42,15 +42,12 @@ class BitBuffer
     public function putBit(bool $bit): void
     {
         $bufIndex = \floor($this->length / 8);
-
         if (\count($this->buffer) <= $bufIndex) {
             $this->buffer[] = 0;
         }
-
         if ($bit) {
             $this->buffer[(int)$bufIndex] |= (0x80 >> ($this->length % 8));
         }
-
         $this->length++;
     }
 }

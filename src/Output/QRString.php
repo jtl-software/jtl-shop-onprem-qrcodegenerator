@@ -38,7 +38,7 @@ class QRString extends QROutputAbstract
     public function dump(): string
     {
         return match ($this->options->type) {
-            QRCode::OUTPUT_STRING_JSON => \json_encode($this->matrix) ?: '',
+            QRCode::OUTPUT_STRING_JSON => \json_encode($this->matrix, \JSON_THROW_ON_ERROR) ?: '',
             QRCode::OUTPUT_STRING_TEXT => $this->toString(),
             default                    => $this->toHTML(),
         };
@@ -53,7 +53,6 @@ class QRString extends QROutputAbstract
                     ? $this->options->textDark
                     : $this->options->textLight;
             }
-
             $str .= $this->options->eol;
         }
 
@@ -66,7 +65,6 @@ class QRString extends QROutputAbstract
         foreach ($this->matrix as $row) {
             // in order to not bloat the output too much, we use the shortest possible valid HTML tags
             $html .= '<' . $this->options->htmlRowTag . '>';
-
             foreach ($row as $col) {
                 $tag = $col
                     ? 'b'  // dark
@@ -74,11 +72,9 @@ class QRString extends QROutputAbstract
 
                 $html .= '<' . $tag . '></' . $tag . '>';
             }
-
             if (!$this->options->htmlOmitEndTag) {
                 $html .= '</' . $this->options->htmlRowTag . '>';
             }
-
             $html .= $this->options->eol;
         }
 

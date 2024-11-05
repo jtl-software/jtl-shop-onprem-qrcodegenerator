@@ -28,7 +28,6 @@ class Kanji extends QRDataAbstract
     protected array $lengthBits = [8, 10, 12];
 
     /**
-     * @param BitBuffer $buffer
      * @throws QRCodeDataException
      */
     public function write(BitBuffer $buffer): void
